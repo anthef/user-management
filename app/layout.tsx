@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Navbar } from "@/components/navbar";
+import { Poppins, Montserrat } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -10,6 +14,18 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const fontSans = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sans",
+});
+
+const fontHeading = Montserrat({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-heading",
 });
 
 export const metadata: Metadata = {
@@ -25,9 +41,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable, fontHeading.variable)}
       >
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <Navbar />
         {children}
+        </ThemeProvider>
       </body>
     </html>
   );
