@@ -28,7 +28,6 @@ Execute the `migration.sql` file in your Neon PostgreSQL database:
 ```sql
 SET search_path TO siuser;
 
--- Add role column if it doesn't exist
 DO $$ 
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
@@ -39,7 +38,6 @@ BEGIN
     END IF;
 END $$;
 
--- Create admin user
 INSERT INTO users (email, password, role) 
 VALUES ('admin@test.com', '$2b$10$rVKQpZZjGj6tkjm.lQQmS.ZQjGKjN8J7Vh0l.nzr7rI9oVx6.bqGu', 'admin')
 ON CONFLICT (email) DO UPDATE SET role = 'admin';

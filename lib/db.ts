@@ -13,7 +13,6 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000,
 });
 
-// Set search_path when pool connects
 pool.on('connect', async (client) => {
     try {
         await client.query('SET search_path TO siuser, public');
@@ -23,7 +22,6 @@ pool.on('connect', async (client) => {
     }
 });
 
-// Handle pool errors
 pool.on('error', (err) => {
     console.error('Unexpected error on idle client', err);
 });

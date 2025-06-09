@@ -34,7 +34,6 @@ export default function AdminPage() {
   const [deletingUser, setDeletingUser] = useState<User | null>(null);
   const [authChecking, setAuthChecking] = useState(true);
 
-  // Check if user is admin
   useEffect(() => {
     const checkAdminRole = async () => {
       try {
@@ -93,7 +92,6 @@ export default function AdminPage() {
 
   const totalSessions = users.reduce((sum, user) => sum + user.active_sessions, 0);
 
-  // Show loading while checking authentication
   if (authChecking) {
     return (
       <div className="container mx-auto py-8">
@@ -114,7 +112,6 @@ export default function AdminPage() {
           </p>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -157,7 +154,6 @@ export default function AdminPage() {
           </Card>
         </div>
 
-        {/* Users Table */}
         <Card>
           <CardHeader>
             <CardTitle>User Management</CardTitle>
@@ -225,7 +221,6 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
-        {/* Edit User Dialog */}
         <EditUserDialog
           user={editingUser}
           open={!!editingUser}
@@ -233,7 +228,6 @@ export default function AdminPage() {
           onUserUpdated={fetchUsers}
         />
 
-        {/* Delete User Dialog */}
         <DeleteUserDialog
           user={deletingUser}
           open={!!deletingUser}

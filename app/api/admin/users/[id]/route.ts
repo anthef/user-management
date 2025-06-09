@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { hashPassword, getSession } from '@/lib/session';
 
-// Ensure this runs on Node.js runtime
 export const runtime = 'nodejs';
 
-// Helper function to check admin role
 async function validateAdminRole(request: Request) {
     const session = await getSession(request);
     
@@ -23,7 +21,6 @@ async function validateAdminRole(request: Request) {
     return { session, user };
 }
 
-// Update user
 export async function PUT(
     request: Request,
     { params }: { params: { id: string } }
@@ -42,7 +39,6 @@ export async function PUT(
             }, { status: 400 });
         }
 
-        // Validate role
         if (!['user', 'admin'].includes(role)) {
             return NextResponse.json({ 
                 success: false, 
@@ -50,7 +46,6 @@ export async function PUT(
             }, { status: 400 });
         }
 
-        // Check if user exists
         const existingUser = await sql(
             `SELECT id FROM siuser.users WHERE id = $1`, 
             [userId]
@@ -63,16 +58,13 @@ export async function PUT(
             }, { status: 404 });
         }
 
-        // Update user
         if (password) {
-            // Update email, role and password
             const hashedPassword = await hashPassword(password);
             await sql(
                 `UPDATE siuser.users SET email = $1, role = $2, password = $3 WHERE id = $4`,
                 [email, role, hashedPassword, userId]
             );
         } else {
-            // Update only email and role
             await sql(
                 `UPDATE siuser.users SET email = $1, role = $2 WHERE id = $3`,
                 [email, role, userId]
@@ -101,7 +93,6 @@ export async function PUT(
     }
 }
 
-// Delete user
 export async function DELETE(
     request: Request,
     { params }: { params: { id: string } }
@@ -112,7 +103,6 @@ export async function DELETE(
         
         const userId = params.id;
 
-        // Check if user exists
         const existingUser = await sql(
             `SELECT id FROM siuser.users WHERE id = $1`, 
             [userId]
@@ -125,7 +115,6 @@ export async function DELETE(
             }, { status: 404 });
         }
 
-        // Delete user (sessions will be deleted automatically due to CASCADE)
         await sql(
             `DELETE FROM siuser.users WHERE id = $1`,
             [userId]

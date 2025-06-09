@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { verifyPassword, createSession } from '@/lib/session';
 
-// Ensure this runs on Node.js runtime
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {

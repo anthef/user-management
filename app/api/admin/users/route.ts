@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { getSession } from '@/lib/session';
 
-// Ensure this runs on Node.js runtime
 export const runtime = 'nodejs';
 
-// Helper function to check admin role
 async function validateAdminRole(request: Request) {
     const session = await getSession(request);
     
@@ -23,7 +21,6 @@ async function validateAdminRole(request: Request) {
     return { session, user };
 }
 
-// Get all users
 export async function GET(request: Request) {
     try {
         const validation = await validateAdminRole(request);
