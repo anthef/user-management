@@ -11,7 +11,7 @@ import {
 } from 'react-icons/ri';
 
 export function Footer() {
-    <footer>
+    <footer className="border-t bg-background">
         <div></div>
     </footer>
 }
