@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from "crypto";
 import { sql } from './db';
 import { serialize, parse } from 'cookie';
-
+import { NextRequest, NextResponse } from 'next/server';
 
 const COOKIE_NAME = "session_token";
 const COOKIE_OPTS = {
@@ -35,9 +35,8 @@ export async function getSession(request: Request){
     const { session_token } = parse(cookie);
     if(!session_token){
         return null;
-    } 
-    const rows = await sql(
-        `SELECT s.token, s.expires_at, s.user_id, u.id, u.email
+    }    const rows = await sql(
+        `SELECT s.token, s.expires_at, s.user_id, u.id, u.email, u.role
         FROM sessions s
         JOIN users u ON s.user_id = u.id
         WHERE s.token = $1 AND s.expires_at > NOW()`
@@ -53,7 +52,8 @@ export async function getSession(request: Request){
             user_id: session.user_id,
             user: {
                 id: session.id,
-                email: session.email
+                email: session.email,
+                role: session.role
             }
         };
 }
@@ -64,4 +64,12 @@ export function destroySession(){
         expires: new Date(0),
         maxAge: 0
     });
+}
+
+export async function deleteSession(token: string) {
+    try {
+        await sql(`DELETE FROM sessions WHERE token = $1`, [token]);
+    } catch (error) {
+        console.error('Error deleting session:', error);
+    }
 }
