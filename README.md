@@ -1,36 +1,167 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# User Management System
+
+A modern user management system built with Next.js, TypeScript, and PostgreSQL.
+
+## Features
+
+- 🔐 **Authentication**: Secure login/register with session-based auth
+- 👥 **User Management**: Create, manage, and authenticate users
+- 🛡️ **Protected Routes**: Middleware-based route protection
+- 🎨 **Modern UI**: Built with Tailwind CSS and shadcn/ui components
+- 🌙 **Dark Mode**: Built-in theme switching
+- 📱 **Responsive**: Mobile-first design
+- 🔒 **Security**: Password hashing with bcrypt, secure sessions
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React, TypeScript
+- **Styling**: Tailwind CSS, shadcn/ui
+- **Database**: PostgreSQL
+- **Authentication**: Custom session-based auth
+- **Validation**: Zod schemas
+- **Forms**: React Hook Form
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18+ 
+- PostgreSQL database
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env.local
+   ```
+   Edit `.env.local` and add your database URL:
+   ```
+   DATABASE_URL=postgresql://username:password@localhost:5432/user_management
+   ```
+
+4. Set up the database:
+   - Create a PostgreSQL database
+   - Run the SQL commands from `command.sql` to create the required tables
+
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Database Schema
+
+The application uses the following tables:
+
+### Users Table
+```sql
+CREATE TABLE users(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Sessions Table
+```sql
+CREATE TABLE sessions(
+    token TEXT PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL
+);
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Authentication Endpoints
 
-## Learn More
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration  
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/me` - Get current user info
 
-To learn more about Next.js, take a look at the following resources:
+## Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Authentication System
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Registration**: Users can create accounts with email/password
+- **Login**: Secure login with password verification
+- **Sessions**: Server-side session management with cookies
+- **Logout**: Secure session termination
+- **Protected Routes**: Middleware protects `/admin` routes
 
-## Deploy on Vercel
+### UI Components
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Login Form**: Responsive login form with validation
+- **Register Form**: Registration form with password confirmation
+- **Navbar**: Dynamic navigation with auth state
+- **Admin Dashboard**: Protected admin interface
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Security Features
+
+- Password hashing with bcrypt
+- HTTP-only cookies for sessions
+- CSRF protection
+- Input validation with Zod
+- Secure middleware for route protection
+
+## Project Structure
+
+```
+├── app/
+│   ├── api/auth/          # Authentication API routes
+│   ├── admin/             # Protected admin pages
+│   ├── login/             # Login page
+│   ├── register/          # Registration page
+│   └── layout.tsx         # Root layout with providers
+├── components/
+│   ├── auth/              # Authentication components
+│   ├── ui/                # Reusable UI components
+│   └── navbar.tsx         # Navigation component
+├── hooks/
+│   └── useAuth.tsx        # Authentication context/hook
+├── lib/
+│   ├── db.ts              # Database connection
+│   ├── session.ts         # Session management
+│   └── validations/       # Zod schemas
+└── middleware.ts          # Route protection middleware
+```
+
+## Development
+
+### Adding New Features
+
+1. **API Routes**: Add new routes in `app/api/`
+2. **Pages**: Create new pages in `app/`
+3. **Components**: Add reusable components in `components/`
+4. **Hooks**: Add custom hooks in `hooks/`
+5. **Validation**: Add Zod schemas in `lib/validations/`
+
+### Environment Variables
+
+- `DATABASE_URL`: PostgreSQL connection string
+- `NODE_ENV`: Environment (development/production)
+
+## Deployment
+
+1. Set up a PostgreSQL database
+2. Configure environment variables
+3. Run database migrations
+4. Deploy to your preferred platform (Vercel, Railway, etc.)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
